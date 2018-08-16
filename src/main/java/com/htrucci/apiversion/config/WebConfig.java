@@ -1,6 +1,6 @@
 package com.htrucci.apiversion.config;
 
-import com.htrucci.apiversion.handler.CmtApiVersionRequestMappingHandlerMapping;
+import com.htrucci.apiversion.handler.ApiVersionRequestMappingHandlerMapping;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.ComponentScan;
@@ -27,7 +27,7 @@ public class WebConfig extends WebMvcConfigurationSupport {
 
     @Override
     public RequestMappingHandlerMapping requestMappingHandlerMapping() {
-        RequestMappingHandlerMapping mapping = new CmtApiVersionRequestMappingHandlerMapping();
+        RequestMappingHandlerMapping mapping = new ApiVersionRequestMappingHandlerMapping();
         mapping.setInterceptors(getInterceptors());
         return mapping;
     }
