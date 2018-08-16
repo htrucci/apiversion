@@ -13,14 +13,15 @@ import javax.servlet.http.HttpServletRequest;
 @RequestMapping("/service/api/")
 public class ApiController {
 
-	@RequestMapping(value = "test", method = {RequestMethod.GET, RequestMethod.POST})
-	public void testv1(HttpServletRequest httpReq, Model model) throws Exception{
-		System.out.println("test1");
+	@RequestMapping(value = "/test", method = {RequestMethod.GET, RequestMethod.POST})
+	public String testv1(HttpServletRequest httpReq, Model model) throws Exception{
+		return "test";
 	}
 
 	@ApiVersion(version = Version.V2)
 	@RequestMapping(value = "/{version}/test", method = {RequestMethod.GET, RequestMethod.POST})
-	public void testv2(HttpServletRequest httpReq, Model model) throws Exception{
+	public String testv2(HttpServletRequest httpReq, Model model) throws Exception{
 		System.out.println("testv2");
+		return "test";
 	}
 }

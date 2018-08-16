@@ -11,6 +11,7 @@ import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandl
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class ApiVersionRequestMappingHandlerMapping extends RequestMappingHandlerMapping {
@@ -91,7 +92,6 @@ public class ApiVersionRequestMappingHandlerMapping extends RequestMappingHandle
         String url = "";
         for(int i=0; i<requestMappingList.size(); i++){
             String[] mappingValue = requestMappingList.get(i).value();
-            System.out.println(mappingValue[0]);
             url += mappingValue[0];
         }
         String[] patterns = {new String(StringUtils.replaceOnce(url, "{version}", apiVersion))};
@@ -108,16 +108,16 @@ public class ApiVersionRequestMappingHandlerMapping extends RequestMappingHandle
     private RequestMappingInfo createMethodApiVersionInfo(ApiVersion apiVersion, RequestCondition<?> methodCondition, List<RequestMapping> requestMappingList) {
         Version[] versions = apiVersion.version();
         String[] url = new String[versions.length];
+        Arrays.fill(url, "");
         for(int i=0; i<versions.length; i++){
             for(int j=0; j<requestMappingList.size(); j++){
                 String[] mappingValue = requestMappingList.get(j).value();
-                System.out.println(mappingValue[0]);
                 url[i] += mappingValue[0];
             }
             url[i] = StringUtils.replaceOnce(url[i], "{version}", versions[i].getVersion());
             url[i] = StringUtils.replace(url[i], "{version}", "");
         }
-
+        replaceDoubleSlash(url);
         String[] patterns = url;
         return new RequestMappingInfo(
                 new PatternsRequestCondition(patterns, getUrlPathHelper(), getPathMatcher(), useSuffixPatternMatch(), useTrailingSlashMatch(), getFileExtensions()),
@@ -132,6 +132,7 @@ public class ApiVersionRequestMappingHandlerMapping extends RequestMappingHandle
 
     private RequestMappingInfo createVersionRequestMappingInfo(ApiVersion apiVersion, RequestCondition<?> customCondition, List<RequestMapping> requestMappingList) {
         String[] url = new String[apiVersion.version().length];
+        Arrays.fill(url, "");
         for(int i=0; i<apiVersion.version().length; i++){
             url[i] = "";
             for(int j=0; j<requestMappingList.size(); j++){
@@ -141,6 +142,7 @@ public class ApiVersionRequestMappingHandlerMapping extends RequestMappingHandle
             url[i] = StringUtils.replaceOnce(url[i], "{version}", apiVersion.version()[i].getVersion());
             url[i] = StringUtils.replace(url[i], "{version}", "");
         }
+        replaceDoubleSlash(url);
         String[] patterns = url;
         return new RequestMappingInfo(
                 new PatternsRequestCondition(patterns, getUrlPathHelper(), getPathMatcher(), useSuffixPatternMatch(), useTrailingSlashMatch(), getFileExtensions()),
@@ -150,6 +152,12 @@ public class ApiVersionRequestMappingHandlerMapping extends RequestMappingHandle
                 new ConsumesRequestCondition(),
                 new ProducesRequestCondition(),
                 customCondition);
+    }
+
+    private void replaceDoubleSlash(String[] url) {
+        for(int i=0; i<url.length; i++){
+            url[i] = url[i].replaceAll("//", "/");
+        }
     }
 
 }
